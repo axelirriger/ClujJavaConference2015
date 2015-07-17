@@ -12,7 +12,7 @@ import backtype.storm.tuple.Tuple;
 @SuppressWarnings("serial")
 public class MaterialSplitterBolt extends BaseRichBolt {
 
-	private OutputCollector outputCollector;
+	private transient OutputCollector outputCollector;
 
 	@Override
 	public void execute(Tuple arg0) {

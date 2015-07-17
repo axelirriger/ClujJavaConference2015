@@ -14,6 +14,8 @@ import de.axelirriger.storm.calcEngine.spouts.NewPriceInfoSpout;
 
 public class CalculateTopology {
 
+	private CalculateTopology() {}
+	
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException, InterruptedException {
 		TopologyBuilder builder = new TopologyBuilder();
 		

@@ -17,7 +17,7 @@ import backtype.storm.utils.Utils;
 @SuppressWarnings("serial")
 public class NewPriceInfoSpout extends BaseRichSpout {
 
-	private SpoutOutputCollector outputCollector;
+	private transient SpoutOutputCollector outputCollector;
 
 	/* Reader instance for the input files */
 	private transient BufferedReader fileReader;
@@ -40,7 +40,7 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 		try {
 			columns = fileReader.readLine().split(",");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e);
 		}
 		outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
 	}
@@ -67,7 +67,7 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 			try {
 				fileReader.close();
 			} catch (IOException e) {
-				
+				System.err.println(e);
 			}
 	}
 
