@@ -31,7 +31,7 @@ public class CalculateTopology {
 		/*
 		 * The splitter which connects to all sources and splits according the material found
 		 */
-		final BoltDeclarer materialSplitter = builder.setBolt("materialSplitter", new MaterialSplitterBolt(), 5);
+		final BoltDeclarer materialSplitter = builder.setBolt("materialSplitter", new MaterialSplitterBolt(), 1);
 		materialSplitter.shuffleGrouping("tritanium-spout");
 		materialSplitter.shuffleGrouping("mexallon-spout");
 		materialSplitter.shuffleGrouping("isogen-spout");
@@ -63,7 +63,7 @@ public class CalculateTopology {
 	    
 	    if (args != null && args.length > 0) {
 	        //parallelism hint to set the number of workers
-	        conf.setNumWorkers(3);
+	        conf.setNumWorkers(6);
 	        //submit the topology
 	        StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
 	      }
