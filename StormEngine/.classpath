@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Storm 0.9.5"/>
-	<classpathentry kind="lib" path="/Users/axel/Downloads/apache-storm-0.9.5/lib/storm-core-0.9.5.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
