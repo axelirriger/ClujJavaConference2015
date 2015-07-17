@@ -1,10 +1,9 @@
 package de.axelirriger.storm.calcEngine.spouts;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import backtype.storm.spout.SpoutOutputCollector;
@@ -50,9 +49,8 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 	public void open(@SuppressWarnings("rawtypes") Map arg0, TopologyContext arg1, SpoutOutputCollector arg2) {
 		this.outputCollector = arg2;
 		
-		File input = new File(inputFile);
 		try {
-			fileReader = new BufferedReader(new FileReader(input));
+			fileReader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(inputFile)));
 			// Ignore first line, as it is the header
 			fileReader.readLine();
 		} catch (FileNotFoundException e) {
