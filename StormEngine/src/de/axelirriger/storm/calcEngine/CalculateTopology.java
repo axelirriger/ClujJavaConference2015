@@ -14,8 +14,8 @@ public class CalculateTopology {
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException, InterruptedException {
 		TopologyBuilder builder = new TopologyBuilder();
 		
-		builder.setSpout("spout", new QuellenSpout(), 1);
-		builder.setBolt("filter", new ProcessorBolt(), 1).shuffleGrouping("spout");
+		builder.setSpout("spout", new QuellenSpout(), 2);
+		builder.setBolt("filter", new ProcessorBolt(), 8).shuffleGrouping("spout");
 		builder.setBolt("senke", new SenkenBolt(), 1).shuffleGrouping("filter");
 
 		Config conf = new Config();
