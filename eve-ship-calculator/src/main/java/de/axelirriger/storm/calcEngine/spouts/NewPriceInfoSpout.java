@@ -36,21 +36,24 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 	public void nextTuple() {
 		Utils.sleep(1000);
 
-		try {
-			if(fileReader.ready()) {
-				String[] columns = new String[2];
-				try {
-					columns = fileReader.readLine().split(",");
-				} catch (IOException e) {
-					System.err.println(e);
+		if(fileReader != null) {
+			try {
+				if(fileReader.ready()) {
+					String[] columns = new String[2];
+					try {
+						columns = fileReader.readLine().split(",");
+					} catch (IOException e) {
+						System.err.println(e);
+					}
+					outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
+				} else {
+					System.err.println("Completely read line; file is finished");
+					fileReader.close();
+					fileReader = null;
 				}
-				outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
-			} else {
-				System.err.println("Completely read line; file is finished");
-				fileReader.close();
+			} catch (NumberFormatException | IOException e) {
+				System.err.println(e);
 			}
-		} catch (NumberFormatException | IOException e) {
-			System.err.println(e);
 		}
 	}
 
