@@ -14,6 +14,18 @@ import de.axelirriger.storm.calcEngine.spouts.NewPriceInfoSpout;
 
 public class CalculateTopology {
 
+	private static final String BOLT_MATERIAL_SPLITTER = "materialSplitter";
+	private static final String BOLT_KESTREL_ZYDRINE = "kestrel-zydrine";
+	private static final String BOLT_KESTREL_NOCXIUM = "kestrel-nocxium";
+	private static final String BOLT_KESTREL_ISOGEN = "kestrel-isogen";
+	private static final String BOLT_KESTREL_MEXALLON = "kestrel-mexallon";
+	private static final String BOLT_KESTREL_TRITANIUM = "kestrel-tritanium";
+	private static final String SPOUT_ZYDRINE = "zydrine-spout";
+	private static final String SPOUT_NOCXIUM = "nocxium-spout";
+	private static final String SPOUT_ISOGEN = "isogen-spout";
+	private static final String SPOUT_MEXALLON = "mexallon-spout";
+	private static final String SPOUT_TRITANIUM = "tritanium-spout";
+
 	private CalculateTopology() {}
 	
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException, InterruptedException {
@@ -22,41 +34,41 @@ public class CalculateTopology {
 		/*
 		 * Source components (spouts). Each one simply operates on the given file
 		 */
-		builder.setSpout("tritanium-spout", new NewPriceInfoSpout("Tritanium-Apple.csv", "Tritanium"), 1);
-		builder.setSpout("mexallon-spout", new NewPriceInfoSpout("Mexallon-Microsoft.csv", "Mexallon"), 1);
-		builder.setSpout("isogen-spout", new NewPriceInfoSpout("Isogen-ATT.csv", "Isogen"), 1);
-		builder.setSpout("nocxium-spout", new NewPriceInfoSpout("Nocxium-Oracle.csv", "Nocxium"), 1);
-		builder.setSpout("zydrine-spout", new NewPriceInfoSpout("Zydrine-Motorola.csv", "Zydrinen"), 1);
+		builder.setSpout(SPOUT_TRITANIUM, new NewPriceInfoSpout("Tritanium-Apple.csv", "Tritanium"), 1);
+		builder.setSpout(SPOUT_MEXALLON, new NewPriceInfoSpout("Mexallon-Microsoft.csv", "Mexallon"), 1);
+		builder.setSpout(SPOUT_ISOGEN, new NewPriceInfoSpout("Isogen-ATT.csv", "Isogen"), 1);
+		builder.setSpout(SPOUT_NOCXIUM, new NewPriceInfoSpout("Nocxium-Oracle.csv", "Nocxium"), 1);
+		builder.setSpout(SPOUT_ZYDRINE, new NewPriceInfoSpout("Zydrine-Motorola.csv", "Zydrinen"), 1);
 
 		/*
 		 * The splitter which connects to all sources and splits according the material found
 		 */
-		final BoltDeclarer materialSplitter = builder.setBolt("materialSplitter", new MaterialSplitterBolt(), 1);
-		materialSplitter.shuffleGrouping("tritanium-spout");
-		materialSplitter.shuffleGrouping("mexallon-spout");
-		materialSplitter.shuffleGrouping("isogen-spout");
-		materialSplitter.shuffleGrouping("nocxium-spout");
-		materialSplitter.shuffleGrouping("zydrine-spout");
+		final BoltDeclarer materialSplitter = builder.setBolt(BOLT_MATERIAL_SPLITTER, new MaterialSplitterBolt(), 1);
+		materialSplitter.shuffleGrouping(SPOUT_TRITANIUM);
+		materialSplitter.shuffleGrouping(SPOUT_MEXALLON);
+		materialSplitter.shuffleGrouping(SPOUT_ISOGEN);
+		materialSplitter.shuffleGrouping(SPOUT_NOCXIUM);
+		materialSplitter.shuffleGrouping(SPOUT_ZYDRINE);
 		
-		final IBasicBolt kestrelTritanium = new ShipMaterialCostCalculatorBolt("kestrel-tritanium", 16337);
-		final IBasicBolt kestrelMexallon = new ShipMaterialCostCalculatorBolt("kestrel-mexallon", 2837);
-		final IBasicBolt kestrelIsogen = new ShipMaterialCostCalculatorBolt("kestrel-isogen", 947);
-		final IBasicBolt kestrelNocxium = new ShipMaterialCostCalculatorBolt("kestrel-nocxium", 1);
-		final IBasicBolt kestrelZydrine = new ShipMaterialCostCalculatorBolt("kestrel-zydrine", 1);
+		final IBasicBolt kestrelTritanium = new ShipMaterialCostCalculatorBolt(BOLT_KESTREL_TRITANIUM, 16337);
+		final IBasicBolt kestrelMexallon = new ShipMaterialCostCalculatorBolt(BOLT_KESTREL_MEXALLON, 2837);
+		final IBasicBolt kestrelIsogen = new ShipMaterialCostCalculatorBolt(BOLT_KESTREL_ISOGEN, 947);
+		final IBasicBolt kestrelNocxium = new ShipMaterialCostCalculatorBolt(BOLT_KESTREL_NOCXIUM, 1);
+		final IBasicBolt kestrelZydrine = new ShipMaterialCostCalculatorBolt(BOLT_KESTREL_ZYDRINE, 1);
 
-		builder.setBolt("kestrel-tritanium", kestrelTritanium, 1).shuffleGrouping("materialSplitter", "tritanium");
-		builder.setBolt("kestrel-mexallon", kestrelMexallon, 1).shuffleGrouping("materialSplitter", "mexallon");
-		builder.setBolt("kestrel-isogen", kestrelIsogen, 1).shuffleGrouping("materialSplitter", "isogen");
-		builder.setBolt("kestrel-nocxium", kestrelNocxium, 1).shuffleGrouping("materialSplitter", "nocxium");
-		builder.setBolt("kestrel-zydrine", kestrelZydrine, 1).shuffleGrouping("materialSplitter", "zydrine");
+		builder.setBolt(BOLT_KESTREL_TRITANIUM, kestrelTritanium, 1).shuffleGrouping(BOLT_MATERIAL_SPLITTER, "tritanium");
+		builder.setBolt(BOLT_KESTREL_MEXALLON, kestrelMexallon, 1).shuffleGrouping(BOLT_MATERIAL_SPLITTER, "mexallon");
+		builder.setBolt(BOLT_KESTREL_ISOGEN, kestrelIsogen, 1).shuffleGrouping(BOLT_MATERIAL_SPLITTER, "isogen");
+		builder.setBolt(BOLT_KESTREL_NOCXIUM, kestrelNocxium, 1).shuffleGrouping(BOLT_MATERIAL_SPLITTER, "nocxium");
+		builder.setBolt(BOLT_KESTREL_ZYDRINE, kestrelZydrine, 1).shuffleGrouping(BOLT_MATERIAL_SPLITTER, "zydrine");
 		
 		final IBasicBolt kestrel = new KestrelCostCalculatorBolt();
 		final BoltDeclarer kestrelBolt = builder.setBolt("kestrel", kestrel, 1);
-		kestrelBolt.shuffleGrouping("kestrel-tritanium");
-		kestrelBolt.shuffleGrouping("kestrel-mexallon");
-		kestrelBolt.shuffleGrouping("kestrel-isogen");
-		kestrelBolt.shuffleGrouping("kestrel-nocxium");
-		kestrelBolt.shuffleGrouping("kestrel-zydrine");
+		kestrelBolt.shuffleGrouping(BOLT_KESTREL_TRITANIUM);
+		kestrelBolt.shuffleGrouping(BOLT_KESTREL_MEXALLON);
+		kestrelBolt.shuffleGrouping(BOLT_KESTREL_ISOGEN);
+		kestrelBolt.shuffleGrouping(BOLT_KESTREL_NOCXIUM);
+		kestrelBolt.shuffleGrouping(BOLT_KESTREL_ZYDRINE);
 		
 		Config conf = new Config();
 	    conf.setDebug(true);

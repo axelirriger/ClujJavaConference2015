@@ -56,24 +56,38 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 		Utils.sleep(1000);
 
 		if(fileReader != null) {
-			try {
-				if(fileReader.ready()) {
-					String[] columns = new String[2];
-					try {
-						columns = fileReader.readLine().split(",");
-					} catch (IOException e) {
-						System.err.println(e);
-					}
-					outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
-				} else {
-					LOG.info("Completely read file '" + inputFile + "'");
-					fileReader.close();
-					fileReader = null;
-				}
-			} catch (NumberFormatException | IOException e) {
-				System.err.println(e);
-			}
+			processFile();
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void processFile() {
+		try {
+			if(fileReader.ready()) {
+				readAndEmitLine();
+			} else {
+				LOG.info("Completely read file '" + inputFile + "'");
+				fileReader.close();
+				fileReader = null;
+			}
+		} catch (NumberFormatException | IOException e) {
+			LOG.error(e.getMessage());
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void readAndEmitLine() {
+		String[] columns = new String[2];
+		try {
+			columns = fileReader.readLine().split(",");
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+		}
+		outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
 	}
 
 	/*
