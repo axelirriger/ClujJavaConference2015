@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -17,6 +20,10 @@ import backtype.storm.utils.Utils;
 @SuppressWarnings("serial")
 public class NewPriceInfoSpout extends BaseRichSpout {
 
+	/* Logger */
+	private static final Logger LOG = LoggerFactory.getLogger(NewPriceInfoSpout.class);
+	
+	/* Output emitter */
 	private transient SpoutOutputCollector outputCollector;
 
 	/* Reader instance for the input files */
@@ -25,13 +32,25 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 	/* Key with which read prices are emitted */
 	private String materialKey;
 
+	/* The file to read */
 	private String inputFile;
 	
-	public NewPriceInfoSpout(String inputFile, String materialKey) {
+	/**
+	 * Default constructor
+	 * 
+	 * @param inputFile The file to read from the archiv
+	 * @param materialKey The key under which to emit information
+	 */
+	public NewPriceInfoSpout(final String inputFile, final String materialKey) {
+		LOG.info("Creating new price info spout for '" + materialKey + "' from file '" + inputFile + "'");
 		this.materialKey = materialKey;
 		this.inputFile = inputFile;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see backtype.storm.spout.ISpout#nextTuple()
+	 */
 	@Override
 	public void nextTuple() {
 		Utils.sleep(1000);
@@ -47,7 +66,7 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 					}
 					outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
 				} else {
-					System.err.println("Completely read line; file is finished");
+					LOG.info("Completely read file '" + inputFile + "'");
 					fileReader.close();
 					fileReader = null;
 				}
@@ -57,6 +76,10 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see backtype.storm.spout.ISpout#open(java.util.Map, backtype.storm.task.TopologyContext, backtype.storm.spout.SpoutOutputCollector)
+	 */
 	@Override
 	public void open(@SuppressWarnings("rawtypes") Map arg0, TopologyContext arg1, SpoutOutputCollector arg2) {
 		this.outputCollector = arg2;
@@ -66,9 +89,9 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 			// Ignore first line, as it is the header
 			fileReader.readLine();
 		} catch (FileNotFoundException e) {
-			System.err.println(e);
+			LOG.error(e.getMessage());
 		} catch (IOException e) {
-			System.err.println(e);
+			LOG.error(e.getMessage());
 		}
 
 	}
@@ -79,7 +102,7 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 			try {
 				fileReader.close();
 			} catch (IOException e) {
-				System.err.println(e);
+				LOG.error(e.getMessage());
 			}
 	}
 
