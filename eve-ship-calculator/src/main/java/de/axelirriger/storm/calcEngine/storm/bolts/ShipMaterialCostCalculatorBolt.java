@@ -1,4 +1,4 @@
-package de.axelirriger.storm.calcEngine.bolts;
+package de.axelirriger.storm.calcEngine.storm.bolts;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;

@@ -1,4 +1,4 @@
-package de.axelirriger.storm.calcEngine.spouts;
+package de.axelirriger.storm.calcEngine.storm.spouts;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

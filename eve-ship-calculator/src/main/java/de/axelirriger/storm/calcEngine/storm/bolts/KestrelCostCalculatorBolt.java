@@ -1,4 +1,4 @@
-package de.axelirriger.storm.calcEngine.bolts;
+package de.axelirriger.storm.calcEngine.storm.bolts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -6,6 +6,7 @@ import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Tuple;
+import de.axelirriger.storm.calcEngine.core.KestrelCostCalculatorBean;
 
 @SuppressWarnings("serial")
 public class KestrelCostCalculatorBolt extends BaseBasicBolt {
@@ -13,14 +14,9 @@ public class KestrelCostCalculatorBolt extends BaseBasicBolt {
 	/* Logger */
 	private static final Logger LOG = LoggerFactory.getLogger(KestrelCostCalculatorBolt.class);
 
-	double priceSum = 0d;
-
-	double costTritanium = 0;
-	double costMexallon = 0;
-	double costIsogen = 0;
-	double costNocxium = 0;
-	double costZydrine = 0;
-
+	/* Bean to handle computation */
+	private transient KestrelCostCalculatorBean calcBean = new KestrelCostCalculatorBean();
+	
 	/*
 	 * (non-Javadoc)
 	 * @see backtype.storm.topology.IBasicBolt#execute(backtype.storm.tuple.Tuple, backtype.storm.topology.BasicOutputCollector)
@@ -31,24 +27,19 @@ public class KestrelCostCalculatorBolt extends BaseBasicBolt {
 		double cost = arg0.getDoubleByField("cost");
 
 		if("kestrel-tritanium".equals(material))
-			costTritanium = cost;
+			calcBean.setTritaniumCost(cost);
 		else if("kestrel-mexallon".equals(material))
-			costMexallon = cost;
+			calcBean.setMexallonCost(cost);
 		else if("kestel-isogen".equals(material))
-			costIsogen = cost;
+			calcBean.setIsogenCost(cost);
 		else if("kestrel-nocxium".equals(material))
-			costNocxium = cost;
+			calcBean.setNocxiumCost(cost);
 		else if("kestrel-zydrine".equals(material))
-			costZydrine = cost;
+			calcBean.setZydrineCost(cost);
+
+		calcBean.calculateShipCost();
 		
-		priceSum = costTritanium+costMexallon+costIsogen+costNocxium+costZydrine;
-		
-		LOG.error("Kestrel price component: Tritanium " + costTritanium);
-		LOG.error("Kestrel price component: Mexallon " + costMexallon);
-		LOG.error("Kestrel price component: Isogen " + costIsogen);
-		LOG.error("Kestrel price component: Nocxium " + costNocxium);
-		LOG.error("Kestrel price component: Zydrine " + costZydrine);
-		LOG.error("Kestrel ship price " + priceSum + " ISK");
+		LOG.error("Kestrel ship price " + calcBean.getShipCost() + " ISK");
 	}
 
 	/*

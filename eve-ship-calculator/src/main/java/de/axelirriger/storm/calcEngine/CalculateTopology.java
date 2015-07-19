@@ -7,10 +7,10 @@ import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.topology.BoltDeclarer;
 import backtype.storm.topology.IBasicBolt;
 import backtype.storm.topology.TopologyBuilder;
-import de.axelirriger.storm.calcEngine.bolts.KestrelCostCalculatorBolt;
-import de.axelirriger.storm.calcEngine.bolts.MaterialSplitterBolt;
-import de.axelirriger.storm.calcEngine.bolts.ShipMaterialCostCalculatorBolt;
-import de.axelirriger.storm.calcEngine.spouts.NewPriceInfoSpout;
+import de.axelirriger.storm.calcEngine.storm.bolts.KestrelCostCalculatorBolt;
+import de.axelirriger.storm.calcEngine.storm.bolts.MaterialSplitterBolt;
+import de.axelirriger.storm.calcEngine.storm.bolts.ShipMaterialCostCalculatorBolt;
+import de.axelirriger.storm.calcEngine.storm.spouts.NewPriceInfoSpout;
 
 public class CalculateTopology {
 
