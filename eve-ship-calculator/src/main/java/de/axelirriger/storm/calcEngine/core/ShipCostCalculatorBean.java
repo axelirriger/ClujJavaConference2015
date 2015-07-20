@@ -1,6 +1,6 @@
 package de.axelirriger.storm.calcEngine.core;
 
-public class KestrelCostCalculatorBean {
+public class ShipCostCalculatorBean {
 	double costSum = 0d;
 
 	double costTritanium = 0;
@@ -8,10 +8,11 @@ public class KestrelCostCalculatorBean {
 	double costIsogen = 0;
 	double costNocxium = 0;
 	double costZydrine = 0;
+	double costMegacyte=0;
+	double costPyerite=0;
 
 	public final void calculateShipCost() {
-		costSum = costTritanium+costMexallon+costIsogen+costNocxium+costZydrine;
-
+		costSum = costTritanium+costMexallon+costIsogen+costNocxium+costZydrine+costMegacyte+costPyerite;
 	}
 
 	/**
@@ -60,5 +61,21 @@ public class KestrelCostCalculatorBean {
 	 */
 	public double getShipCost() {
 		return costSum;
+	}
+
+	/**
+	 * 
+	 * @param cost
+	 */
+	public void setMegacyteCost(double cost) {
+		costMegacyte = cost;
+	}
+	
+	/**
+	 * 
+	 * @param cost
+	 */
+	public void setPyeriteCost(double cost) {
+		costPyerite = cost;
 	}
 }
