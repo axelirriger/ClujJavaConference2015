@@ -7,8 +7,8 @@ import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.topology.BoltDeclarer;
 import backtype.storm.topology.TopologyBuilder;
 import de.axelirriger.storm.calcEngine.storm.bolts.MaterialSplitterBolt;
-import de.axelirriger.storm.calcEngine.storm.topology.Kestrel;
-import de.axelirriger.storm.calcEngine.storm.topology.Rifter;
+import de.axelirriger.storm.calcEngine.storm.topology.CaldariKestrel;
+import de.axelirriger.storm.calcEngine.storm.topology.MinmatarRifter;
 import de.axelirriger.storm.calcEngine.storm.topology.TopologyBuilderMaterialSpouts;
 
 public class CalculateTopology {
@@ -34,13 +34,13 @@ public class CalculateTopology {
 		/*
 		 * Create Kestrel information 
 		 */
-		Kestrel kestrel = new Kestrel();
+		CaldariKestrel kestrel = new CaldariKestrel();
 		kestrel.createTopology(builder);
 		
 		/*
 		 * Create Rifter information
 		 */
-		Rifter rifter = new Rifter();
+		MinmatarRifter rifter = new MinmatarRifter();
 		rifter.createTopology(builder);
 		
 		Config conf = new Config();
@@ -54,9 +54,6 @@ public class CalculateTopology {
 	      }
 	      //Otherwise, we are running locally
 	      else {
-	        //Cap the maximum number of executors that can be spawned
-	        //for a component to 3
-	        conf.setMaxTaskParallelism(3);
 	        //LocalCluster is used to run locally
 	        LocalCluster cluster = new LocalCluster();
 	        //submit the topology
@@ -73,7 +70,7 @@ public class CalculateTopology {
 	 * @param builder
 	 */
 	private static void createMaterialSplitter(TopologyBuilder builder) {
-		final BoltDeclarer materialSplitter = builder.setBolt(BOLT_MATERIAL_SPLITTER, new MaterialSplitterBolt(), 1);
+		final BoltDeclarer materialSplitter = builder.setBolt(BOLT_MATERIAL_SPLITTER, new MaterialSplitterBolt(), 1).setNumTasks(7);
 		materialSplitter.shuffleGrouping(TopologyBuilderMaterialSpouts.SPOUT_TRITANIUM);
 		materialSplitter.shuffleGrouping(TopologyBuilderMaterialSpouts.SPOUT_MEXALLON);
 		materialSplitter.shuffleGrouping(TopologyBuilderMaterialSpouts.SPOUT_ISOGEN);

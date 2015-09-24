@@ -3,19 +3,19 @@ package de.axelirriger.storm.calcEngine.storm.topology;
 import backtype.storm.topology.IBasicBolt;
 import de.axelirriger.storm.calcEngine.storm.bolts.KestrelCalculatorBolt;
 
-public class Kestrel extends AbstractShipTopologyBuilder {
+public class GallenteImicus extends AbstractShipTopologyBuilder {
 
 	static {
-		SHIP = "kestrel";
+		SHIP = "imicus";
 	}
 
-	protected int tritanium = 16337;
-	protected int mexallon = 2837;
-	protected int isogen = 947;
-	protected int nocxium = 1;
+	protected int tritanium = 7292;
+	protected int mexallon = 1425;
+	protected int isogen = 1;
+	protected int nocxium = 0;
 	protected int zydrine = 1;
 	protected int megacyte = 0;
-	protected int pyerite = 0;
+	protected int pyerite = 5964;
 
 	@Override
 	protected IBasicBolt createShipCostCalculator() {

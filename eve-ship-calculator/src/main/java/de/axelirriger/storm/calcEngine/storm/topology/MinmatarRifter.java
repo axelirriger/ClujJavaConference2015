@@ -4,7 +4,7 @@ import backtype.storm.topology.IBasicBolt;
 import de.axelirriger.storm.calcEngine.storm.bolts.AbstractCostCalculatorBolt;
 import de.axelirriger.storm.calcEngine.storm.bolts.RifterCalculatorBolt;
 
-public class Rifter extends AbstractShipTopologyBuilder {
+public class MinmatarRifter extends AbstractShipTopologyBuilder {
 
 	static {
 		SHIP = "rifter";
