@@ -1,4 +1,4 @@
-package de.axelirriger.storm.calcEngine.storm.bolts;
+	package de.axelirriger.storm.calcEngine.storm.bolts;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -22,7 +22,7 @@ public class ShipMaterialCostCalculatorBolt extends BaseBasicBolt {
 	/**
 	 * The ship-specific material to be emitted
 	 */
-	protected String FIELD_MATERIAL = "kestrel-tritanium";
+	protected String FIELD_MATERIAL = "--";
 
 	/**
 	 * Declares the amount of material necessary.

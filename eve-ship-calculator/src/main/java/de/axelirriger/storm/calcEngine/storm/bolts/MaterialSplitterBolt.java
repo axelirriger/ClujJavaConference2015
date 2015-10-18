@@ -9,8 +9,53 @@ import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
-@SuppressWarnings("serial")
+/**
+ * This class gets tuples from all material sources and re-emits them to material specific stream.
+ * 
+ * @author irrigera
+ *
+ */
 public class MaterialSplitterBolt extends BaseRichBolt {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3951334071534818897L;
+
+	/**
+	 * The output stream of Pyerite prices
+	 */
+	public static final String STREAM_PYERITE = "pyerite";
+	
+	/**
+	 * The output stream of Megacyte prices
+	 */
+	public static final String STREAM_MEGACYTE = "megacyte";
+	
+	/**
+	 * The output stream of Zydrine prices
+	 */
+	public static final String STREAM_ZYDRINE = "zydrine";
+	
+	/**
+	 * The output stream of Nocxium prices
+	 */
+	public static final String STREAM_NOCXIUM = "nocxium";
+	
+	/**
+	 * The output stream of Isogen prices
+	 */
+	public static final String STREAM_ISOGEN = "isogen";
+	
+	/**
+	 * The output stream of Mexallonvprices
+	 */
+	public static final String STREAM_MEXALLON = "mexallon";
+	
+	/**
+	 * The output stream of Tritanium prices
+	 */
+	public static final String STREAM_TRITANIUM = "tritanium";
 
 	/**
 	 * The output collector
@@ -22,9 +67,11 @@ public class MaterialSplitterBolt extends BaseRichBolt {
 	 * @see backtype.storm.task.IBolt#execute(backtype.storm.tuple.Tuple)
 	 */
 	@Override
-	public void execute(Tuple arg0) {
+	public void execute(final Tuple arg0) {
+		// Get the material name from the input tuple ...
 		final String element = arg0.getStringByField("element");
 
+		// ... and emit it the material specific output stream
 		final String outputStream = element.toLowerCase();
 		outputCollector.emit(outputStream, arg0.getValues());
 	}
@@ -43,15 +90,20 @@ public class MaterialSplitterBolt extends BaseRichBolt {
 	 * @see backtype.storm.topology.IComponent#declareOutputFields(backtype.storm.topology.OutputFieldsDeclarer)
 	 */
 	@Override
-	public void declareOutputFields(OutputFieldsDeclarer arg0) {
-		/* Declare dedicated streams per material */
-		arg0.declareStream("tritanium", new Fields("element", "price"));
-		arg0.declareStream("mexallon", new Fields("element", "price"));
-		arg0.declareStream("isogen", new Fields("element", "price"));
-		arg0.declareStream("nocxium", new Fields("element", "price"));
-		arg0.declareStream("zydrine", new Fields("element", "price"));
-		arg0.declareStream("megacyte", new Fields("element", "price"));
-		arg0.declareStream("pyerite", new Fields("element", "price"));
+	public void declareOutputFields(final OutputFieldsDeclarer arg0) {
+		 //  Declare the tuple output declaration
+		final Fields outputTupleDeclaration = new Fields("element", "price");
+		
+		/* 
+		 * Declare dedicated streams per material
+		 */
+		arg0.declareStream(STREAM_TRITANIUM, outputTupleDeclaration);
+		arg0.declareStream(STREAM_MEXALLON, outputTupleDeclaration);
+		arg0.declareStream(STREAM_ISOGEN, outputTupleDeclaration);
+		arg0.declareStream(STREAM_NOCXIUM, outputTupleDeclaration);
+		arg0.declareStream(STREAM_ZYDRINE, outputTupleDeclaration);
+		arg0.declareStream(STREAM_MEGACYTE, outputTupleDeclaration);
+		arg0.declareStream(STREAM_PYERITE, outputTupleDeclaration);
 	}
 
 }

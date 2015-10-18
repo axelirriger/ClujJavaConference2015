@@ -14,33 +14,56 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
 import de.axelirriger.storm.calcEngine.core.NewPriceInfoBean;
 
-@SuppressWarnings("serial")
+/**
+ * The class emits tuples to streams.
+ * 
+ * @author irrigera
+ *
+ */
 public class NewPriceInfoSpout extends BaseRichSpout {
 
-	/* Logger */
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8968374826748203469L;
+
+	/**
+	 * Logger
+	 */
 	private static final Logger LOG = LoggerFactory.getLogger(NewPriceInfoSpout.class);
-	
-	/* Output emitter */
+
+	/**
+	 * Output emitter
+	 */
 	private transient SpoutOutputCollector outputCollector;
 
-	/* The file to read */
+	/**
+	 * The file to read
+	 */
 	private String inputFile;
-	
+
 	/**
 	 * The business logic
 	 */
 	private transient NewPriceInfoBean priceInfoBean;
 
+	/**
+	 * The name of the material to emit
+	 */
 	private String materialKey;
-	
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param inputFile The file to read from the archiv
-	 * @param materialKey The key under which to emit information
+	 * @param inputFile
+	 *            The file to read from the archiv
+	 * @param materialKey
+	 *            The key under which to emit information
 	 */
 	public NewPriceInfoSpout(final String inputFile, final String materialKey) {
-		LOG.info("Creating new price info spout for '" + materialKey + "' from file '" + inputFile + "'");
+		if(LOG.isInfoEnabled()) {
+			LOG.info("Creating new price info spout for '" + materialKey + "' from file '" + inputFile + "'");
+		}
 
 		this.inputFile = inputFile;
 		this.materialKey = materialKey;
@@ -48,23 +71,28 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see backtype.storm.spout.ISpout#nextTuple()
 	 */
 	@Override
 	public void nextTuple() {
-		Utils.sleep(1000);
+		// What one sec between emitting tuples
+		// Utils.sleep(1000);
 
 		priceInfoBean.processFile(outputCollector);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see backtype.storm.spout.ISpout#open(java.util.Map, backtype.storm.task.TopologyContext, backtype.storm.spout.SpoutOutputCollector)
+	 * 
+	 * @see backtype.storm.spout.ISpout#open(java.util.Map,
+	 * backtype.storm.task.TopologyContext,
+	 * backtype.storm.spout.SpoutOutputCollector)
 	 */
 	@Override
 	public void open(@SuppressWarnings("rawtypes") Map arg0, TopologyContext arg1, SpoutOutputCollector arg2) {
 		this.outputCollector = arg2;
-		
+
 		final InputStream inputFileInputStream = this.getClass().getClassLoader().getResourceAsStream(inputFile);
 
 		priceInfoBean = new NewPriceInfoBean();
@@ -74,6 +102,7 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see backtype.storm.topology.base.BaseRichSpout#close()
 	 */
 	@Override
@@ -83,11 +112,14 @@ public class NewPriceInfoSpout extends BaseRichSpout {
 
 	/*
 	 * (non-Javadoc)
-	 * @see backtype.storm.topology.IComponent#declareOutputFields(backtype.storm.topology.OutputFieldsDeclarer)
+	 * 
+	 * @see
+	 * backtype.storm.topology.IComponent#declareOutputFields(backtype.storm.
+	 * topology.OutputFieldsDeclarer)
 	 */
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer arg0) {
-		// Two elements will be issued
+		// Two elements will be emitted
 		arg0.declare(new Fields("element", "price"));
 	}
 

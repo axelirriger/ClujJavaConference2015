@@ -12,25 +12,31 @@ import org.slf4j.LoggerFactory;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.tuple.Values;
 
+/**
+ * This class reads new price information from a file and emits it to the stream
+ * configured.
+ * 
+ * @author irrigera
+ *
+ */
 public class NewPriceInfoBean {
 	/**
 	 * Logger instance
 	 */
 	private static final Logger LOG = LoggerFactory.getLogger(NewPriceInfoBean.class);
-	
+
 	/**
-	 *  Reader instance for the input files 
+	 * Reader instance for the input files
 	 */
 	private transient BufferedReader fileReader;
 
 	/**
-	 *  The input stream to the source file 
+	 * The input stream to the source file
 	 */
 	private transient InputStreamReader inputStreamReader;
 
-
 	/**
-	 *  Key with which read prices are emitted 
+	 * Key with which read prices are emitted
 	 */
 	private String materialKey;
 
@@ -38,13 +44,15 @@ public class NewPriceInfoBean {
 	 * 
 	 */
 	public void closeInputFile() {
-		if(fileReader != null) {
+		if (fileReader != null) {
 			try {
 				fileReader.close();
 			} catch (IOException e) {
-				LOG.error(e.getMessage());
+				if (LOG.isErrorEnabled()) {
+					LOG.error(e.getMessage());
+				}
 			}
-		}	
+		}
 	}
 
 	/**
@@ -58,45 +66,56 @@ public class NewPriceInfoBean {
 			// Ignore first line, as it is the header
 			fileReader.readLine();
 		} catch (FileNotFoundException e) {
-			LOG.error(e.getMessage());
+			if (LOG.isErrorEnabled()) {
+				LOG.error(e.getMessage());
+			}
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
-		}
-	}
-
-
-	/**
-	 * Checks whether the file is ready for consumption and 
-	 * emits a line from it.
-	 * @param outputCollector 
-	 */
-	public void processFile(SpoutOutputCollector outputCollector) {
-		if(fileReader != null) {
-			try {
-				if(fileReader.ready()) {
-					readAndEmitLine(outputCollector);
-				} else {
-					LOG.info("Completely read file");
-					fileReader.close();
-					fileReader = null;
-				}
-			} catch (NumberFormatException | IOException e) {
+			if (LOG.isErrorEnabled()) {
 				LOG.error(e.getMessage());
 			}
 		}
 	}
 
 	/**
-	 * Reads a new line from the file, splits it by a comma and commits the first column
-	 * with a <code>materialKey</code>.
-	 * @param outputCollector 
+	 * Checks whether the file is ready for consumption and emits a line from
+	 * it.
+	 * 
+	 * @param outputCollector
+	 */
+	public void processFile(final SpoutOutputCollector outputCollector) {
+		if (fileReader != null) {
+			try {
+				if (fileReader.ready()) {
+					readAndEmitLine(outputCollector);
+				} else {
+					if (LOG.isInfoEnabled()) {
+						LOG.info("Completely read file");
+					}
+					fileReader.close();
+					fileReader = null;
+				}
+			} catch (NumberFormatException | IOException e) {
+				if (LOG.isErrorEnabled()) {
+					LOG.error(e.getMessage());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Reads a new line from the file, splits it by a comma and commits the
+	 * first column with a <code>materialKey</code>.
+	 * 
+	 * @param outputCollector
 	 */
 	private void readAndEmitLine(final SpoutOutputCollector outputCollector) {
 		String[] columns = new String[2];
 		try {
 			columns = fileReader.readLine().split(",");
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
+			if (LOG.isErrorEnabled()) {
+				LOG.error(e.getMessage());
+			}
 		}
 		outputCollector.emit(new Values(materialKey, Double.parseDouble(columns[1])));
 	}
@@ -108,5 +127,5 @@ public class NewPriceInfoBean {
 	public void setMaterialKey(String materialKey2) {
 		this.materialKey = materialKey2;
 	}
-	
+
 }
