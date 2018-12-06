@@ -1,6 +1,7 @@
 package de.axelirriger.storm.calcEngine.storm.topology;
 
-import backtype.storm.topology.TopologyBuilder;
+import org.apache.storm.topology.TopologyBuilder;
+
 import de.axelirriger.storm.calcEngine.storm.spouts.NewPriceInfoSpout;
 
 /**

@@ -1,6 +1,7 @@
 package de.axelirriger.storm.calcEngine.storm.topology;
 
-import backtype.storm.topology.IBasicBolt;
+import org.apache.storm.topology.IBasicBolt;
+
 import de.axelirriger.storm.calcEngine.storm.bolts.ShipCostCalculatorBolt;
 
 /**
